@@ -38,21 +38,29 @@ $(function(){
 	});
 
 
-	function check_user_name(){
-		var len = $('#user_name').val().length;
-		if(len<5||len>20)
-		{
-			$('#user_name').next().html('请输入5-20个字符的用户名')
-			$('#user_name').next().show();
-			error_name = true;
-		}
-		else
-		{
-			$('#user_name').next().hide();
-			error_name = false;
-		}
-	}
+	function check_user_name() {
+        var len = $('#user_name').val().length;
+        if (len < 5 || len > 20) {
+            $('#user_name').next().html('请输入5-20个字符的用户名')
+            $('#user_name').next().show();
+            error_name = true;
+        }
+        else {
+            // 验证用户名是否存在
+            $.get('/user/user_name', {'uname': $('#user_name').val()}, function (data) {
+                if (data.result == 1) {
+                    $('#user_name').next().html('用户名已经存在').show();
+                    // $('#user_name').next().show();
+                    error_name = true;
 
+                } else {
+
+                    $('#user_name').next().hide();
+                    error_name = false;
+                }
+            });
+        }
+    }
 	function check_pwd(){
 		var len = $('#pwd').val().length;
 		if(len<8||len>20)
