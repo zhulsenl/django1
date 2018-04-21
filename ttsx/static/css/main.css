@@ -614,7 +614,15 @@ html,body{height:100%}
 	margin-top:7px;
 	text-indent:10px;
 }
-
+.site_con .form_group select{
+	width:99px;
+	height:25px;
+	border:1px solid #ddd;
+	float:left;
+	outline:none;
+	margin-top:7px;
+	text-indent:10px;
+}
 .site_con .form_group2{
 	height:90px;
 }

@@ -130,3 +130,23 @@ EMAIL_HOST_USER = 'zhulsenl@163.com'
 EMAIL_HOST_PASSWORD = 'cyz13057005561'
 #收件人看到的发件人
 EMAIL_FROM = '天天生鲜<zhulsenl@163.com>'
+
+# 缓存   bancend驱动
+# django支持的缓存方案有：本地内存，文件，mysql,nosql--redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/7",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+
+# 配置session的保存方式，设置成与cache一致
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+LOGIN_URL='/user/login'
+
