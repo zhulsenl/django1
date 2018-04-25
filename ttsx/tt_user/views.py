@@ -13,7 +13,7 @@ from utils import celery_tasks
 # django提供的用户验证功能
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from utils.view import LoginRequiredView,LoginRequiredViewMixin
 
 # 只要在django.contrib后面的，都是django的额外功能
 
@@ -220,7 +220,8 @@ def order(request):
 
 # @login_required
 # def site(request):
-class SiteView(View):
+# class SiteView(LoginRequiredView):
+class SiteView(LoginRequiredViewMixin, View):
     def get(self, request):
         user = request.user
         # 查找当前用户的所有收获地址

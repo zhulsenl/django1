@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.conf.urls import url
 from . import views
+from django.contrib.auth.decorators import login_required
 
 urlpatterns=[
     # url('^register$', views.register),
@@ -15,6 +16,7 @@ urlpatterns=[
     url('^$', views.info),
     url('^order$', views.order),
     # url('^site$', views.site),
+    # url('^site$', login_required(views.SiteView.as_view())),
     url('^site$', views.SiteView.as_view()),
     url('^area$', views.area),
 
