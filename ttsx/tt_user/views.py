@@ -13,7 +13,10 @@ from utils import celery_tasks
 # django提供的用户验证功能
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from utils.view import LoginRequiredView,LoginRequiredViewMixin
+from utils.view import LoginRequiredView, LoginRequiredViewMixin
+from django_redis import get_redis_connection
+from tt_goods.models import GoodsSKU
+
 
 # 只要在django.contrib后面的，都是django的额外功能
 
@@ -203,8 +206,35 @@ def info(request):
     # if not request.user.is_authenticated():
     #     return redirect('/user/login')
 
-    context = {
+    # 查询最近浏览的信息
+    browser_key = 'browser%d' % request.user.id
+    # 获取redis的连接
+    redis_client = get_redis_connection()
+    # 获取列表数据
+    skuid_list = redis_client.lrange(browser_key, 0, -1)
+    # 根据编号查询商品对象
+    sku_list = []
+    for skuid in skuid_list:
+        sku_list.append(GoodsSKU.objects.get(pk=skuid))
 
+    # 查询收货地址的第一条数据显示
+    addr_list = request.user.address_set.all()
+    mobile = ''
+    addr = ''
+
+    if addr_list:
+        addr1 = addr_list[2]
+        mobile = addr1.receiver_mobile
+        addr = '%s %s %s %s'%(addr1.province.atitle,
+                              addr1.city.atitle,
+                              addr1.district.atitle,
+                              addr1.detail_addr)
+
+    context = {
+        'title': '个人信息',
+        'sku_list': sku_list,
+        'mobile':mobile,
+        'addr':addr,
     }
 
     return render(request, 'user_center_info.html', context)
@@ -245,7 +275,7 @@ class SiteView(LoginRequiredViewMixin, View):
 
         # 创建对象
         addr = Address()
-        addr.receive_name = receiver_name
+        addr.receiver_name = receiver_name
         addr.province_id = province_id
         addr.city_id = city_id
         addr.district_id = district_id
